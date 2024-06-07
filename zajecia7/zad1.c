@@ -1,53 +1,45 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include <string.h>
 
-// Funkcja do obliczania wartości energetycznej z danej linijki
-int oblicz_wartosc(char *linijka) {
-    int dlugosc = strlen(linijka);
-    int pierwsza_cyfra, ostatnia_cyfra;
+int calc(char *line) {
+    int length = strlen(line);
+    int firstval, lastval;
 
-    // Szukamy pierwszej cyfry w linijce
-    for (int i = 0; i < dlugosc; i++) {
-        if (isdigit(linijka[i])) {
-            pierwsza_cyfra = linijka[i] - '0';
+    for(int i=0; i<length; i++) {
+        if (line[i] >= '0' && line[i] <= '9'){
+            firstval = line[i] - '0';
             break;
         }
     }
 
-    // Szukamy ostatniej cyfry w linijce
-    for (int i = dlugosc - 1; i >= 0; i--) {
-        if (isdigit(linijka[i])) {
-            ostatnia_cyfra = linijka[i] - '0';
+    for(int i= length -1; i >= 0;i--) {
+        if(line[i] >= '0' && line[i] <= '9') {
+            lastval = line[i] - '0';
             break;
         }
     }
-
-    // Obliczamy wartość energetyczną
-    return pierwsza_cyfra * 10 + ostatnia_cyfra;
+    int value = firstval *10 + lastval;
+    printf("Number: %d\n", value);
+    return value;
 }
 
 int main() {
-    FILE *plik;
-    char linijka[100];
-    int suma = 0;
+    int sum = 0;
 
-    // Otwieramy plik
-    plik = fopen("dane.txt", "r");
-    if (plik == NULL) {
-        printf("Nie udalo sie otworzyc pliku.");
+    FILE *file = fopen("input.txt", "r");
+
+    if (file == NULL) {
+        printf("Cannot find file with provided name!\n");
         return 1;
     }
 
-    // Odczytujemy linijki z pliku i obliczamy sumę wartości energetycznych
-    while (fgets(linijka, sizeof(linijka), plik) != NULL) {
-        suma += oblicz_wartosc(linijka);
+    char line[100];
+
+    while (fgets(line,sizeof(line),file)!= NULL) {
+        sum += calc(line);
     }
 
-    // Zamykamy plik
-    fclose(plik);
-
-    printf("Suma wszystkich wartości energetycznych: %d\n", suma);
-
+    fclose(file);
+    printf("Sum of all energetic values: %d\n", sum);
     return 0;
 }
